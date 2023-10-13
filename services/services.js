@@ -1,15 +1,15 @@
-const model = require("../models/contacts");
+const { validationSchemaContacts } = require("../models/Contacts");
 
 const listContacts = async () => {
-  return await model.find();
+  return await validationSchemaContacts.find();
 };
 
 const getById = async (id) => {
-  return await model.findById(id);
+  return await validationSchemaContacts.findById(id);
 };
 
 const addContact = async (body) => {
-  const newContact = await model.create({ ...body });
+  const newContact = await validationSchemaContacts.create({ ...body });
 
   if (!newContact) throw new Error();
 
@@ -17,19 +17,23 @@ const addContact = async (body) => {
 };
 
 const updateContact = async (id, body) => {
-  return await model.findByIdAndUpdate({ _id: id }, body, {
+  return await validationSchemaContacts.findByIdAndUpdate({ _id: id }, body, {
     new: true,
   });
 };
 
 const removeContact = async (id) => {
-  return await model.findByIdAndRemove({ _id: id });
+  return await validationSchemaContacts.findByIdAndRemove({ _id: id });
 };
 
 const updateStatusContact = async (contactId, body) => {
-  return await model.findByIdAndUpdate({ _id: contactId }, body, {
-    new: true,
-  });
+  return await validationSchemaContacts.findByIdAndUpdate(
+    { _id: contactId },
+    body,
+    {
+      new: true,
+    }
+  );
 };
 
 const serviceContact = {
