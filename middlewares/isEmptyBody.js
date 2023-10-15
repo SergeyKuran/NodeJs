@@ -1,4 +1,4 @@
-const { HttpError } = require("../middlewares/httpError");
+const { HttpError } = require("./httpError");
 const { validationFavorite } = require("../models/Contacts");
 
 const IsEmptyBody = (req, res, next) => {
