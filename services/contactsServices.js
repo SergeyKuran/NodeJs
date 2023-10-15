@@ -1,15 +1,15 @@
 const { validationSchemaContacts } = require("../models/Contacts");
 
-const listContacts = async () => {
-  return await validationSchemaContacts.find();
+const listContacts = async (ownerId) => {
+  return await validationSchemaContacts.find({ owner: ownerId });
 };
 
-const getById = async (id) => {
-  return await validationSchemaContacts.findById(id);
+const getById = async (id, owner) => {
+  return await validationSchemaContacts.findOne({ _id: id, owner });
 };
 
-const addContact = async (body) => {
-  const newContact = await validationSchemaContacts.create({ ...body });
+const addContact = async (body, owner) => {
+  const newContact = await validationSchemaContacts.create({ ...body, owner });
 
   if (!newContact) throw new Error();
 
@@ -36,7 +36,7 @@ const updateStatusContact = async (contactId, body) => {
   );
 };
 
-const serviceContact = {
+const contactsServices = {
   listContacts,
   getById,
   addContact,
@@ -46,5 +46,5 @@ const serviceContact = {
 };
 
 module.exports = {
-  serviceContact,
+  contactsServices,
 };
