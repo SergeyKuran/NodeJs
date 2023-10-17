@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 const Joi = require("joi");
-const { handleSaveError, validatorsAtUpdate } = require("../models/hooks");
+const { handleSaveError, validatorsAtUpdate } = require("./hooks");
 
 const schemaContacts = new Schema(
   {
@@ -48,6 +48,7 @@ const validationSchema = Joi.object({
       tlds: { allow: ["com", "net", "org", "ua"] },
     })
     .required(),
+
   phone: Joi.string().min(8).max(30).required(),
   favorite: Joi.boolean().default(false),
 });

@@ -6,6 +6,8 @@ const { userSingupSchema, userSinginSchema } = require("../models/Users");
 const { validateBodyAuth } = require("../middlewares/validateBodyAuth");
 const { IsEmptyBody } = require("../middlewares/isEmptyBody");
 
+const { authentificate } = require("../middlewares/authentificate");
+
 router.post(
   "/users/register",
   IsEmptyBody,
@@ -19,5 +21,9 @@ router.post(
   validateBodyAuth(userSinginSchema),
   authController.singin
 );
+
+// router.post("/users/logout", authController.logout);
+
+router.get("/users/current", authentificate, authController.current);
 
 module.exports = router;

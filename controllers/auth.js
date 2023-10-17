@@ -1,7 +1,11 @@
 const { HttpError } = require("../middlewares/httpError");
-const { User } = require("../models/Users");
 const { ControllerWrapper } = require("../utils/ControllerWrapper");
+const { User } = require("../models/Users");
+
 const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+const { JWT_SECRET } = process.env;
 
 const singup = async (req, res) => {
   const { email, password } = req.body;
@@ -33,10 +37,14 @@ const singin = async (req, res) => {
     throw HttpError(401, "Email or password is wrong");
   }
 
-  const token = "dsddsds";
+  const payload = {
+    id: userFind._id,
+  };
+
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
 
   res.status(200).json({
-    token: token,
+    token,
     user: {
       email: userFind.email,
       subscription: userFind.subscription,
@@ -44,7 +52,26 @@ const singin = async (req, res) => {
   });
 };
 
+// const logout = async (req, res) => {
+//   const { id } = req.body;
+//   const user = User.findById(id);
+
+//   if (!user) throw HttpError(401, "Not authorized");
+//   res.status(201).json({ message: "No Content" });
+// };
+
+const current = async (req, res) => {
+  const { email, subscription } = req.user;
+
+  res.json({
+    email,
+    subscription,
+  });
+};
+
 module.exports = {
   singup: ControllerWrapper(singup),
   singin: ControllerWrapper(singin),
+  // logout: ControllerWrapper(logout),
+  current: ControllerWrapper(current),
 };
