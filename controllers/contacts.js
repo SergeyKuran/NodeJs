@@ -6,9 +6,7 @@ const getAllContactsController = async (req, res) => {
   const userId = req.user._id;
   const { page = 1, limit = 20 } = req.query;
   const skip = (page - 1) * limit;
-
   const data = await contactsServices.listContacts(userId, skip, limit);
-
   res.json(data);
 };
 
@@ -39,7 +37,7 @@ const updateContactController = async (req, res) => {
     req.body,
     userId
   );
-
+  console.log("1 :>> ", 1);
   if (!dataContacts) throw HttpError(404);
 
   res.status(200).json(dataContacts);
@@ -57,6 +55,7 @@ const deleteContactController = async (req, res) => {
 
 const updateContactStatus = async (req, res) => {
   const { id } = req.params;
+
   const dataContacts = await contactsServices.updateStatusContact(id, req.body);
 
   if (!dataContacts) throw HttpError(404);

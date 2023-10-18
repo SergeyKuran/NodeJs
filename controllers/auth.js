@@ -1,21 +1,9 @@
-const { HttpError } = require("../middlewares/httpError");
 const { ControllerWrapper } = require("../utils/ControllerWrapper");
-const { User } = require("../models/Users");
-
-const bcryptjs = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-
-const { JWT_SECRET } = process.env;
+const authServices = require("../services/authServices");
+const { HttpError } = require("../middlewares/httpError");
 
 const singup = async (req, res) => {
-  const { email, password } = req.body;
-  const userFind = await User.findOne({ email });
-
-  if (userFind) throw HttpError(409, `Email "${email}" in use`);
-
-  const hashPassword = await bcryptjs.hash(password, 10);
-
-  const user = await User.create({ ...req.body, password: hashPassword });
+  const user = await authServices.singup(req.body);
 
   res.status(201).json({
     user: {
@@ -26,39 +14,22 @@ const singup = async (req, res) => {
 };
 
 const singin = async (req, res) => {
-  const { email, password } = req.body;
-  const userFind = await User.findOne({ email });
-
-  if (!userFind) throw HttpError(401, `"Email or password is wrong"`);
-
-  const comparePassword = await bcryptjs.compare(password, userFind.password);
-
-  if (!comparePassword) {
-    throw HttpError(401, "Email or password is wrong");
-  }
-
-  const payload = {
-    id: userFind._id,
-  };
-
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  const { token, user } = await authServices.singin(req.body);
 
   res.status(200).json({
     token,
     user: {
-      email: userFind.email,
-      subscription: userFind.subscription,
+      email: user.email,
+      subscription: user.subscription,
     },
   });
 };
 
-// const logout = async (req, res) => {
-//   const { id } = req.body;
-//   const user = User.findById(id);
+const logout = async (req, res) => {
+  await authServices.logout(req.user._id);
 
-//   if (!user) throw HttpError(401, "Not authorized");
-//   res.status(201).json({ message: "No Content" });
-// };
+  res.status(204).json({ message: "Logout success" });
+};
 
 const current = async (req, res) => {
   const { email, subscription } = req.user;
@@ -69,9 +40,37 @@ const current = async (req, res) => {
   });
 };
 
+const findUsersStatusFavorite = async (req, res) => {
+  const { favorite } = req.query;
+  const findContacts = await authServices.findUsersStatusFavorite(favorite);
+
+  res.status(200).json({ findContacts });
+};
+
+const updateUserSubscription = async (req, res) => {
+  const subscriptionArray = ["starter", "pro", "business"];
+  const { _id } = req.user;
+  const { subscription } = req.body;
+  const test = subscriptionArray.includes(subscription);
+  if (!test)
+    throw HttpError(
+      400,
+      `Unfortunately, there is no such package. Choose one from ${subscriptionArray}`
+    );
+
+  const updateUser = await authServices.updateUserSubscription(
+    _id,
+    subscription
+  );
+
+  res.status(200).json(updateUser);
+};
+
 module.exports = {
   singup: ControllerWrapper(singup),
   singin: ControllerWrapper(singin),
-  // logout: ControllerWrapper(logout),
+  logout: ControllerWrapper(logout),
   current: ControllerWrapper(current),
+  findUsersStatusFavorite: ControllerWrapper(findUsersStatusFavorite),
+  updateUserSubscription: ControllerWrapper(updateUserSubscription),
 };
