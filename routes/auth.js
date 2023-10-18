@@ -22,8 +22,13 @@ router.post(
   authController.singin
 );
 
-// router.post("/users/logout", authController.logout);
+router.post("/users/logout", authentificate, authController.logout);
 
 router.get("/users/current", authentificate, authController.current);
+
+router
+  .route("/users")
+  .get(authentificate, authController.findUsersStatusFavorite)
+  .patch(authentificate, authController.updateUserSubscription);
 
 module.exports = router;

@@ -24,6 +24,10 @@ const schemaUser = new Schema(
       default: "starter",
     },
     token: String,
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
   },
   { versionKey: false, timestamps: true }
 );
