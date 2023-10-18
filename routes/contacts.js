@@ -45,6 +45,4 @@ router
     crtlContacts.updateContactStatus
   );
 
-// router.route("/contacts/favorite").get(crtlContacts.updateStatusFavorite);
-
 module.exports = router;
