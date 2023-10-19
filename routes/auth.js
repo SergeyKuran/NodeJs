@@ -9,25 +9,25 @@ const { IsEmptyBody } = require("../middlewares/isEmptyBody");
 const { authentificate } = require("../middlewares/authentificate");
 
 router.post(
-  "/users/register",
+  "/register",
   IsEmptyBody,
   validateBodyAuth(userSingupSchema),
   authController.singup
 );
 
 router.post(
-  "/users/login",
+  "/login",
   IsEmptyBody,
   validateBodyAuth(userSinginSchema),
   authController.singin
 );
 
-router.post("/users/logout", authentificate, authController.logout);
+router.post("/logout", authentificate, authController.logout);
 
-router.get("/users/current", authentificate, authController.current);
+router.get("/current", authentificate, authController.current);
 
 router
-  .route("/users")
+  .route("/")
   .get(authentificate, authController.findUsersStatusFavorite)
   .patch(authentificate, authController.updateUserSubscription);
 

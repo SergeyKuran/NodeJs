@@ -2,7 +2,6 @@ const { Schema, model } = require("mongoose");
 const Joi = require("joi");
 const { handleSaveError, validatorsAtUpdate } = require("../models/hooks");
 const {
-  nameValidationRegex,
   passwordValidationRegex,
   emailValidationRegex,
 } = require("../utils/validation/constans/regex");
@@ -37,7 +36,6 @@ schemaUser.pre("findOneAndUpdate", validatorsAtUpdate);
 schemaUser.post("findOneAndUpdate", handleSaveError);
 
 const userSingupSchema = Joi.object({
-  username: Joi.string().pattern(nameValidationRegex).required(),
   email: Joi.string().pattern(emailValidationRegex).required(),
   password: Joi.string().min(6).pattern(passwordValidationRegex).required(),
 });
