@@ -27,6 +27,7 @@ const schemaUser = new Schema(
       type: Boolean,
       default: false,
     },
+    avatarUrl: String,
   },
   { versionKey: false, timestamps: true }
 );

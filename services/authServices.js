@@ -5,17 +5,25 @@ const { validationSchemaContacts } = require("../models/Contacts");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const gravatar = require("gravatar");
+
 const { JWT_SECRET } = process.env;
 
 const singup = async (body) => {
   const { email, password } = body;
+
   const userFind = await User.findOne({ email });
 
   if (userFind) throw HttpError(409, `Email "${email}" in use`);
 
+  const userAvatar = await gravatar.url(email);
   const hashPassword = await bcryptjs.hash(password, 10);
 
-  return await User.create({ ...body, password: hashPassword });
+  return await User.create({
+    ...body,
+    password: hashPassword,
+    avatarUrl: userAvatar,
+  });
 };
 
 const singin = async (body) => {
