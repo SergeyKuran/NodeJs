@@ -2,7 +2,6 @@ const multer = require("multer");
 const path = require("path");
 
 const UPLOAD_PATH = path.resolve("tmp");
-console.log("UPLOAD_PATH :>> ", UPLOAD_PATH);
 
 const storage = multer.diskStorage({
   destination: (req, file, cd) => {
