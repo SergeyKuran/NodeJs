@@ -77,10 +77,10 @@ const updateAvatar = async (req, res) => {
   await sizePicture(oldPathAvatar, filename);
   await fs.unlink(oldPathAvatar);
   const pathAvatar = path.join("avatars", filename);
-  const avatar = await authServices.updateAvatar(_id, pathAvatar);
+  const { avatarURL } = await authServices.updateAvatar(_id, pathAvatar);
 
   res.json({
-    avatar,
+    avatarURL,
   });
 };
 
