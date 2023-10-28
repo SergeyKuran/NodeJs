@@ -16,13 +16,13 @@ const singup = async (body) => {
 
   if (userFind) throw HttpError(409, `Email "${email}" in use`);
 
-  const userAvatar = await gravatar.url(email);
+  const avatarURL = await gravatar.url(email);
   const hashPassword = await bcryptjs.hash(password, 10);
 
   return await User.create({
     ...body,
     password: hashPassword,
-    avatarUrl: userAvatar,
+    avatarURL,
   });
 };
 
@@ -74,12 +74,25 @@ const updateUserSubscription = async (userId, subscription) => {
   return user;
 };
 
+const updateAvatar = async (_id, pathAvatar) => {
+  const user = await User.findByIdAndUpdate(
+    { _id: _id },
+    { avatarURL: pathAvatar },
+    { new: true }
+  );
+
+  if (!user) throw HttpError(404, `Id: ${_id} not found`);
+
+  return user;
+};
+
 const authServices = {
   singup,
   singin,
   logout,
   findUsersStatusFavorite,
   updateUserSubscription,
+  updateAvatar,
 };
 
 module.exports = authServices;

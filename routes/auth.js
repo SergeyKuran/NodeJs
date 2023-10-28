@@ -27,11 +27,16 @@ router.post("/logout", authentificate, authController.logout);
 
 router.get("/current", authentificate, authController.current);
 
-router.patch("/avatars", authentificate, storage.single("avatar"));
-
 router
   .route("/")
   .get(authentificate, authController.findUsersStatusFavorite)
   .patch(authentificate, authController.updateUserSubscription);
+
+router.patch(
+  "/avatars",
+  authentificate,
+  storage.single("avatar"),
+  authController.updateAvatar
+);
 
 module.exports = router;
