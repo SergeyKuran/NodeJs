@@ -2,6 +2,11 @@ const { ControllerWrapper } = require("../utils/ControllerWrapper");
 const authServices = require("../services/authServices");
 const { HttpError } = require("../middlewares/httpError");
 
+const path = require("path");
+const fs = require("fs/promises");
+
+const { sizePicture } = require("../utils//sizePicture");
+
 const singup = async (req, res) => {
   const user = await authServices.singup(req.body);
 
@@ -66,6 +71,19 @@ const updateUserSubscription = async (req, res) => {
   res.status(200).json(updateUser);
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: oldPathAvatar, filename } = req.file;
+  await sizePicture(oldPathAvatar, filename);
+  await fs.unlink(oldPathAvatar);
+  const pathAvatar = path.join("avatars", filename);
+  const { avatarURL } = await authServices.updateAvatar(_id, pathAvatar);
+
+  res.json({
+    avatarURL,
+  });
+};
+
 module.exports = {
   singup: ControllerWrapper(singup),
   singin: ControllerWrapper(singin),
@@ -73,4 +91,5 @@ module.exports = {
   current: ControllerWrapper(current),
   findUsersStatusFavorite: ControllerWrapper(findUsersStatusFavorite),
   updateUserSubscription: ControllerWrapper(updateUserSubscription),
+  updateAvatar: ControllerWrapper(updateAvatar),
 };

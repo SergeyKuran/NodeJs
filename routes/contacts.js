@@ -17,7 +17,7 @@ const { validationSchema, validationFavorite } = require("../models/Contacts");
 router.use(authentificate);
 
 router
-  .route("/contacts")
+  .route("/")
   .get(crtlContacts.getAllContactsController)
   .post(
     IsEmptyBody,
@@ -26,7 +26,7 @@ router
   );
 
 router
-  .route("/contacts/:id")
+  .route("/:id")
   .get(validId, crtlContacts.getContactByIdController)
   .put(
     validId,
@@ -37,7 +37,7 @@ router
   .delete(validId, crtlContacts.deleteContactController);
 
 router
-  .route("/contacts/:id/favorite")
+  .route("/:id/favorite")
   .patch(
     validId,
     IsEmptyBodyFavorite,

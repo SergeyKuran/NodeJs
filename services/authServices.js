@@ -5,17 +5,25 @@ const { validationSchemaContacts } = require("../models/Contacts");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const gravatar = require("gravatar");
+
 const { JWT_SECRET } = process.env;
 
 const singup = async (body) => {
   const { email, password } = body;
+
   const userFind = await User.findOne({ email });
 
   if (userFind) throw HttpError(409, `Email "${email}" in use`);
 
+  const avatarURL = await gravatar.url(email);
   const hashPassword = await bcryptjs.hash(password, 10);
 
-  return await User.create({ ...body, password: hashPassword });
+  return await User.create({
+    ...body,
+    password: hashPassword,
+    avatarURL,
+  });
 };
 
 const singin = async (body) => {
@@ -66,12 +74,25 @@ const updateUserSubscription = async (userId, subscription) => {
   return user;
 };
 
+const updateAvatar = async (_id, pathAvatar) => {
+  const user = await User.findByIdAndUpdate(
+    { _id: _id },
+    { avatarURL: pathAvatar },
+    { new: true }
+  );
+
+  if (!user) throw HttpError(404, `Id: ${_id} not found`);
+
+  return user;
+};
+
 const authServices = {
   singup,
   singin,
   logout,
   findUsersStatusFavorite,
   updateUserSubscription,
+  updateAvatar,
 };
 
 module.exports = authServices;

@@ -37,7 +37,7 @@ const updateContactController = async (req, res) => {
     req.body,
     userId
   );
-  console.log("1 :>> ", 1);
+  
   if (!dataContacts) throw HttpError(404);
 
   res.status(200).json(dataContacts);
