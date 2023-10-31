@@ -2,7 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const authController = require("../controllers/auth");
-const { userSingupSchema, userSinginSchema } = require("../models/Users");
+const {
+  userSingupSchema,
+  userSinginSchema,
+  userEmailSchema,
+} = require("../models/Users");
 const { validateBodyAuth } = require("../middlewares/validateBodyAuth");
 const { IsEmptyBody } = require("../middlewares/isEmptyBody");
 
@@ -37,6 +41,14 @@ router.patch(
   authentificate,
   storage.single("avatar"),
   authController.updateAvatar
+);
+
+router.get("/verify/:verificationToken", authController.verify);
+
+router.post(
+  "/verify",
+  validateBodyAuth(userEmailSchema),
+  authController.resendVerify
 );
 
 module.exports = router;
