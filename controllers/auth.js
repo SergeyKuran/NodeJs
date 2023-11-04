@@ -84,6 +84,22 @@ const updateAvatar = async (req, res) => {
   });
 };
 
+const verify = async (req, res) => {
+  const { verificationToken } = req.params;
+
+  await authServices.verifyUser(verificationToken);
+
+  res.json({ message: "Verification successful" });
+};
+
+const resendVerify = async (req, res) => {
+  const { email } = req.body;
+
+  await authServices.resendVerifyEmail(email);
+
+  res.json({ message: "Verification email sent" });
+};
+
 module.exports = {
   singup: ControllerWrapper(singup),
   singin: ControllerWrapper(singin),
@@ -92,4 +108,6 @@ module.exports = {
   findUsersStatusFavorite: ControllerWrapper(findUsersStatusFavorite),
   updateUserSubscription: ControllerWrapper(updateUserSubscription),
   updateAvatar: ControllerWrapper(updateAvatar),
+  verify: ControllerWrapper(verify),
+  resendVerify: ControllerWrapper(resendVerify),
 };
